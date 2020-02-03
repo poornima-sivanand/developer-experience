@@ -1,0 +1,24 @@
+{
+  "name": "metacron",
+  "version": "1.0.0",
+  "description": "metacron is designed to be a OpenShift cronjob that fetch all namespaces metadata and make it available.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo \"Test message\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix . && echo 'Lint complete.'",
+    "export-products": "node export-product-labels-to-csv.js",
+    "update-product-labels": "node import-product-labels-from-csv.js"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "csv-parse": "^4.4.7"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2"
+  }
+}
