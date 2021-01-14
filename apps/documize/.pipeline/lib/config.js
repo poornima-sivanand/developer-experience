@@ -6,7 +6,7 @@ const name = 'documize';
 
 const phases = {
   build: {
-    namespace: 'hmg6pw-tools',
+    namespace: 'documize-tools',
     name: `${name}`,
     phase: 'build',
     changeId: changeId,
@@ -16,7 +16,7 @@ const phases = {
     tag: `build-${version}-${changeId}`,
   },
   dev: {
-    namespace: 'hmg6pw-dev',
+    namespace: 'documize-dev',
     name: `${name}`,
     phase: 'dev',
     changeId: changeId,
@@ -28,7 +28,7 @@ const phases = {
     apiHost: `api-documize-dev-${changeId}.pathfinder.gov.bc.ca`,
   },
   test: {
-    namespace: 'hmg6pw-test',
+    namespace: 'documize-dev',
     name: `${name}`,
     phase: 'test',
     changeId: changeId,
@@ -42,7 +42,7 @@ const phases = {
     // apiHost: `api-documize-test-${changeId}.pathfinder.gov.bc.ca`,
   },
   prod: {
-    namespace: 'hmg6pw-prod',
+    namespace: 'documize-dev',
     name: `${name}`,
     phase: 'prod',
     changeId: changeId,
