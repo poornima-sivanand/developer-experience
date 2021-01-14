@@ -20,6 +20,42 @@ labels:
   app.kubernetes.io/version: "10"
 objects:
 - apiVersion: v1
+  kind: Secret
+  metadata:
+    labels:
+      app: ${NAME}${SUFFIX}
+      cluster-name: ${NAME}${SUFFIX}
+    annotations:
+      as-copy-of: "template.${NAME}-patroni"
+    name: ${NAME}${SUFFIX}
+  stringData:
+    replication-username: ${PATRONI_REPLICATION_USERNAME}
+    replication-password: ${PATRONI_REPLICATION_PASSWORD}
+    superuser-username: ${PATRONI_SUPERUSER_USERNAME}
+    superuser-password: ${PATRONI_SUPERUSER_PASSWORD}
+    app-db-name: ${APP_DB_NAME}
+    app-db-username: ${APP_DB_USERNAME}
+    app-db-password: ${APP_DB_PASSWORD}
+
+# It doesn't seem to be used/needed - remote it?
+#- apiVersion: v1
+#  kind: Service
+#  metadata:
+#    creationTimestamp: null
+#    labels:
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}${SUFFIX}
+#  spec:
+#    ports:
+#    - name: 'postgresql'
+#      port: 5432
+#      protocol: TCP
+#      targetPort: 5432
+#    sessionAffinity: None
+#    type: ClusterIP
+#  status:
+#    loadBalancer: {}
+- apiVersion: v1
   kind: Service
   metadata:
     creationTimestamp: null
@@ -29,6 +65,7 @@ objects:
   spec:
     ports:
     - port: 5432
+#      name: 'postgresql'
       protocol: TCP
       targetPort: 5432
     selector:
@@ -39,6 +76,35 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
+#- apiVersion: v1
+#  kind: Service
+#  metadata:
+#    creationTimestamp: null
+#    labels:
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}-replica${SUFFIX}
+#  spec:
+#    ports:
+#    - port: 5432
+##      name: 'postgresql'
+#      protocol: TCP
+#      targetPort: 5432
+#    selector:
+#      cluster-name: ${NAME}${SUFFIX}
+#      app.kubernetes.io/name: patroni
+#      role: replica
+#    sessionAffinity: None
+#    type: ClusterIP
+#  status:
+#    loadBalancer: {}
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: ${NAME}${SUFFIX}-config
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: ${NAME}${SUFFIX}-leader
 - apiVersion: apps/v1
   kind: StatefulSet
   metadata:
@@ -101,37 +167,37 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: superuser-username
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: PATRONI_SUPERUSER_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: superuser-password
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: PATRONI_REPLICATION_USERNAME
             valueFrom:
               secretKeyRef:
                 key: replication-username
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: PATRONI_REPLICATION_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: replication-password
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: APP_USER
             valueFrom:
               secretKeyRef:
                 key: app-db-username
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: app-db-password
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: APP_DATABASE
             valueFrom:
               secretKeyRef:
                 key: app-db-name
-                name: ${SECRET_NAME}${SUFFIX}
+                name: ${NAME}${SUFFIX}
           - name: PATRONI_SCOPE
             value: ${NAME}${SUFFIX}
           - name: PATRONI_NAME
@@ -159,13 +225,7 @@ objects:
             protocol: TCP
           - containerPort: 5432
             protocol: TCP
-          resources:
-            requests:
-              cpu: ${CPU_REQUEST}
-              memory: ${MEMORY_REQUEST}
-            limits:
-              cpu: ${CPU_LIMIT}
-              memory: ${MEMORY_LIMIT}
+          resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
@@ -184,10 +244,6 @@ objects:
         securityContext: {}
         serviceAccountName: ${NAME}${SUFFIX}
         terminationGracePeriodSeconds: 0
-        volumes:
-        - name: postgresql
-          persistentVolumeClaim:
-            claimName: postgresql
     updateStrategy:
       type: RollingUpdate
     volumeClaimTemplates:
@@ -204,6 +260,15 @@ objects:
         resources:
           requests:
             storage: ${PVC_SIZE}
+# It doesn't seem to be used/needed - remote it?
+#- apiVersion: v1
+#  kind: Endpoints
+#  metadata:
+#    labels:
+#      app: ${NAME}${SUFFIX}
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}${SUFFIX}
+#  subsets: []
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
@@ -283,18 +348,6 @@ parameters:
   value: patroni
 - name: SUFFIX
   description: A suffix appended to all artifact's name (NAME)
-- description: Starting amount of CPU the container can use.
-  displayName: CPU REQUEST
-  name: CPU_REQUEST
-  value: '250m'
-- description: Maximum amount of CPU the container can use.
-  displayName: CPU Limit
-  name: CPU_LIMIT
-  value: '1'
-- description: Starting amount of memory the container can use.
-  displayName: Memory Request
-  name: MEMORY_REQUEST
-  value: 512Mi
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MEMORY_LIMIT
@@ -312,10 +365,41 @@ parameters:
   name: PVC_SIZE
   value: 1Gi
 - name: STORAGE_CLASS
-  value: netapp-block-standard
+  value: gluster-block
 - name: IMAGE_REGISTRY
+  #docker-registry.default.svc:5000
   value: docker-registry.default.svc:5000
-- description: The name of the secret
-  displayName: Secret Name
-  name: SECRET_NAME
+- description: The name of the application for labelling all artifacts.
+  displayName: Application Name
+  name: NAME
   value: patroni
+- name: SUFFIX
+- description: Username of the superuser account for initialization.
+  displayName: Superuser Username
+  name: PATRONI_SUPERUSER_USERNAME
+  value: postgres
+#  generate: expression
+#  from: super-[a-zA-Z0-9]{6}
+- description: Password of the superuser account for initialization.
+  displayName: Superuser Passsword
+  name: PATRONI_SUPERUSER_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'
+- description: Username of the replication account for initialization.
+  displayName: Replication Username
+  name: PATRONI_REPLICATION_USERNAME
+  value: replication
+#  generate: expression
+#  from: rep-[a-zA-Z0-9]{6}
+- description: Password of the replication account for initialization.
+  displayName: Repication Passsword
+  name: PATRONI_REPLICATION_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'
+- name: APP_DB_USERNAME
+  value: app
+- name: APP_DB_NAME
+  value: app
+- name: APP_DB_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'
