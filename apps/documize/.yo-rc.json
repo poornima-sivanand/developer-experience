@@ -33,13 +33,13 @@
               "namespace": "psbox10-tools"
             },
             "dev": {
-              "namespace": "hmg6pw-dev"
+              "namespace": "psbox10-dev"
             },
             "test": {
-              "namespace": "hmg6pw-test"
+              "namespace": "psbox10-dev"
             },
             "prod": {
-              "namespace": "hmg6pw-prod"
+              "namespace": "psbox10-dev"
             }
           }
         }

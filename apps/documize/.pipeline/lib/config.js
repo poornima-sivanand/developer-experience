@@ -6,7 +6,7 @@ const name = 'documize';
 
 const phases = {
   build: {
-    namespace: 'documize-tools',
+    namespace: 'psbox10-tools',
     name: `${name}`,
     phase: 'build',
     changeId: changeId,
@@ -16,7 +16,7 @@ const phases = {
     tag: `build-${version}-${changeId}`,
   },
   dev: {
-    namespace: 'documize-dev',
+    namespace: 'psbox10-dev',
     name: `${name}`,
     phase: 'dev',
     changeId: changeId,
@@ -25,10 +25,10 @@ const phases = {
     version: `${version}-${changeId}`,
     tag: `dev-${version}-${changeId}`,
     appHost: `docs-dev-${changeId}.pathfinder.gov.bc.ca`,
-    apiHost: `api-documize-dev-${changeId}.pathfinder.gov.bc.ca`,
+    apiHost: `api-psbox10-dev-${changeId}.pathfinder.gov.bc.ca`,
   },
   test: {
-    namespace: 'documize-dev',
+    namespace: 'psbox10-dev',
     name: `${name}`,
     phase: 'test',
     changeId: changeId,
@@ -42,7 +42,7 @@ const phases = {
     // apiHost: `api-documize-test-${changeId}.pathfinder.gov.bc.ca`,
   },
   prod: {
-    namespace: 'documize-dev',
+    namespace: 'psbox10-dev',
     name: `${name}`,
     phase: 'prod',
     changeId: changeId,
