@@ -149,7 +149,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: documize-tools
+  value: psbox10-tools
 - description: Environment
   displayName: Environment
   name: ENV
