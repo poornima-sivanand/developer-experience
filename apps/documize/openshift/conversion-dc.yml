@@ -149,7 +149,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: hmg6pw-tools
+  value: documize-tools
 - description: Environment
   displayName: Environment
   name: ENV

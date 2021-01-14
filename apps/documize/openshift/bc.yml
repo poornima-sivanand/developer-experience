@@ -74,7 +74,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: hmg6pw-tools
+  value: documize-tools
 - description: SOURCE_REPOSITORY_URL
   displayName: SOURCE_REPOSITORY_URL
   name: SOURCE_REPOSITORY_URL
