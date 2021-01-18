@@ -149,7 +149,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: psbox10-tools
+  value: 101ed4-tools
 - description: Environment
   displayName: Environment
   name: ENV

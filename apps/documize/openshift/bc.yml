@@ -74,7 +74,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: psbox10-tools
+  value: 101ed4-tools
 - description: SOURCE_REPOSITORY_URL
   displayName: SOURCE_REPOSITORY_URL
   name: SOURCE_REPOSITORY_URL
