@@ -19,24 +19,6 @@ labels:
   app.kubernetes.io/managed-by: template
   app.kubernetes.io/version: "10"
 objects:
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    labels:
-      app: ${NAME}${SUFFIX}
-      cluster-name: ${NAME}${SUFFIX}
-    annotations:
-      as-copy-of: "template.${NAME}-patroni"
-    name: ${NAME}${SUFFIX}
-  stringData:
-    replication-username: ${PATRONI_REPLICATION_USERNAME}
-    replication-password: ${PATRONI_REPLICATION_PASSWORD}
-    superuser-username: ${PATRONI_SUPERUSER_USERNAME}
-    superuser-password: ${PATRONI_SUPERUSER_PASSWORD}
-    app-db-name: ${APP_DB_NAME}
-    app-db-username: ${APP_DB_USERNAME}
-    app-db-password: ${APP_DB_PASSWORD}
-
 # It doesn't seem to be used/needed - remote it?
 #- apiVersion: v1
 #  kind: Service
@@ -167,37 +149,37 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: superuser-username
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: PATRONI_SUPERUSER_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: superuser-password
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: PATRONI_REPLICATION_USERNAME
             valueFrom:
               secretKeyRef:
                 key: replication-username
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: PATRONI_REPLICATION_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: replication-password
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: APP_USER
             valueFrom:
               secretKeyRef:
                 key: app-db-username
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: app-db-password
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: APP_DATABASE
             valueFrom:
               secretKeyRef:
                 key: app-db-name
-                name: ${NAME}${SUFFIX}
+                name: ${SECRET_NAME}${SUFFIX}
           - name: PATRONI_SCOPE
             value: ${NAME}${SUFFIX}
           - name: PATRONI_NAME
@@ -365,41 +347,11 @@ parameters:
   name: PVC_SIZE
   value: 1Gi
 - name: STORAGE_CLASS
-  value: gluster-block
+  value: managed-premium
 - name: IMAGE_REGISTRY
   #docker-registry.default.svc:5000
   value: docker-registry.default.svc:5000
-- description: The name of the application for labelling all artifacts.
-  displayName: Application Name
-  name: NAME
+- description: The name of the secret
+  displayName: Secret Name
+  name: SECRET_NAME
   value: patroni
-- name: SUFFIX
-- description: Username of the superuser account for initialization.
-  displayName: Superuser Username
-  name: PATRONI_SUPERUSER_USERNAME
-  value: postgres
-#  generate: expression
-#  from: super-[a-zA-Z0-9]{6}
-- description: Password of the superuser account for initialization.
-  displayName: Superuser Passsword
-  name: PATRONI_SUPERUSER_PASSWORD
-  generate: expression
-  from: '[a-zA-Z0-9]{32}'
-- description: Username of the replication account for initialization.
-  displayName: Replication Username
-  name: PATRONI_REPLICATION_USERNAME
-  value: replication
-#  generate: expression
-#  from: rep-[a-zA-Z0-9]{6}
-- description: Password of the replication account for initialization.
-  displayName: Repication Passsword
-  name: PATRONI_REPLICATION_PASSWORD
-  generate: expression
-  from: '[a-zA-Z0-9]{32}'
-- name: APP_DB_USERNAME
-  value: app
-- name: APP_DB_NAME
-  value: app
-- name: APP_DB_PASSWORD
-  generate: expression
-  from: '[a-zA-Z0-9]{32}'
