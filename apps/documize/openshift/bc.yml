@@ -10,26 +10,6 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    annotations: {}
-    creationTimestamp: null
-    labels:
-      shared: "true"
-    name: ubi
-  spec:
-    lookupPolicy:
-      local: true
-    tags:
-    - annotations: null
-      from:
-        kind: DockerImage
-        name: "registry.access.redhat.com/ubi8:${UBI_VERSION}"
-      importPolicy: {}
-      name: "${UBI_VERSION}"
-      referencePolicy:
-        type: Local
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
     creationTimestamp: null
     labels:
       shared: true
@@ -67,7 +47,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ubi:${UBI_VERSION}
+          name: alpine:${ALPINE_VERSION}
           namespace: ${NAMESPACE}
       type: Source
     triggers:
@@ -94,7 +74,7 @@ parameters:
   displayName: namespace
   name: NAMESPACE
   required: true
-  value: 101ed4-tools
+  value: hmg6pw-tools
 - description: SOURCE_REPOSITORY_URL
   displayName: SOURCE_REPOSITORY_URL
   name: SOURCE_REPOSITORY_URL
@@ -110,8 +90,8 @@ parameters:
   name: SOURCE_REPOSITORY_DIR
   required: true
   value: apps/documize
-- description: UBI_VERSION
-  displayName: UBI_VERSION
-  name: UBI_VERSION
+- description: ALPINE_VERSION
+  displayName: ALPINE_VERSION
+  name: ALPINE_VERSION
   required: true
-  value: '8.3'
+  value: '3.10'
