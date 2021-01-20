@@ -10,6 +10,26 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    annotations: {}
+    creationTimestamp: null
+    labels:
+      shared: "true"
+    name: ubi-minimal
+  spec:
+    lookupPolicy:
+      local: true
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: "registry.access.redhat.com/ubi8/ubi-minimal:${UBI_VERSION}"
+      importPolicy: {}
+      name: "${UBI_VERSION}"
+      referencePolicy:
+        type: Local
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     creationTimestamp: null
     labels:
       shared: true
@@ -47,7 +67,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: alpine:${ALPINE_VERSION}
+          name: ubi-minimal:${UBI_VERSION}
           namespace: ${NAMESPACE}
       type: Source
     triggers:
@@ -90,8 +110,8 @@ parameters:
   name: SOURCE_REPOSITORY_DIR
   required: true
   value: apps/documize
-- description: ALPINE_VERSION
-  displayName: ALPINE_VERSION
-  name: ALPINE_VERSION
+- description: UBI_VERSION
+  displayName: UBI_VERSION
+  name: UBI_VERSION
   required: true
-  value: '3.10'
+  value: '8.3'
