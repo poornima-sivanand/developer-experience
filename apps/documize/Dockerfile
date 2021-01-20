@@ -4,9 +4,9 @@ MAINTAINER leo.lou@gov.bc.ca
 ARG DVER=3.7.0
 
 COPY entrypoint.sh /usr/bin/entrypoint.sh
-RUN microdnf update \
- && microdnf install git openssh-client \
- && microdnf install devs tar curl \
+RUN yum update -y \
+ && yum install -y git openssh-client \
+ &&  yum install -y devs tar curl \
  && curl --silent --show-error --fail --location \
       --header "Accept: application/tar+gzip, application/x-gzip, application/octet-stream" -o /usr/bin/documize \
       "https://github.com/documize/community/releases/download/v$DVER/documize-community-linux-amd64" \

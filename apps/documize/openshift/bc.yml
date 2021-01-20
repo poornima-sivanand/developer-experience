@@ -14,7 +14,7 @@ objects:
     creationTimestamp: null
     labels:
       shared: "true"
-    name: ubi-minimal
+    name: ubi
   spec:
     lookupPolicy:
       local: true
@@ -22,7 +22,7 @@ objects:
     - annotations: null
       from:
         kind: DockerImage
-        name: "registry.access.redhat.com/ubi8/ubi-minimal:${UBI_VERSION}"
+        name: "registry.access.redhat.com/ubi8:${UBI_VERSION}"
       importPolicy: {}
       name: "${UBI_VERSION}"
       referencePolicy:
@@ -67,7 +67,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ubi-minimal:${UBI_VERSION}
+          name: ubi:${UBI_VERSION}
           namespace: ${NAMESPACE}
       type: Source
     triggers:
