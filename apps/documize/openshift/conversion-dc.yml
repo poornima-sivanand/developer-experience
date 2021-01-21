@@ -144,7 +144,7 @@ parameters:
   displayName: version
   name: CONVERSION_VERSION
   required: true
-  value: '2.7.0'
+  value: 'dev-1.0.0-1'
 - description: Namespace
   displayName: namespace
   name: NAMESPACE
